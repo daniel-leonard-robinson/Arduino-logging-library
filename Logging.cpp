@@ -8,7 +8,8 @@ void Logging::Init(int level, long baud){
 
 void Logging::Error(char* msg, ...){
     if (LOG_LEVEL_ERRORS <= _level) {   
-		print ("ERROR: ",0);
+//		print("ERROR: ", 0);
+    	print("ERROR: ", va_list());
         va_list args;
         va_start(args, msg);
         print(msg,args);
