@@ -95,7 +95,8 @@ public:
 	* \param ... any number of variables
 	* \return void
 	*/
-    void Error(char* msg, ...);
+    void Error(const char* msg, ...);
+    void Error(String message, ...);
 	
     /**
 	* Output an info message. Output message contains
@@ -107,7 +108,8 @@ public:
 	* \return void
 	*/
 
-   void Info(char* msg, ...);
+   void Info(const char* msg, ...);
+   void Info(String message, ...);
 	
     /**
 	* Output an debug message. Output message contains
@@ -119,7 +121,8 @@ public:
 	* \return void
 	*/
 
-    void Debug(char* msg, ...);
+    void Debug(const char* msg, ...);
+    void Debug(String message, ...);
 	
     /**
 	* Output an verbose message. Output message contains
@@ -131,10 +134,12 @@ public:
 	* \return void
 	*/
 
-    void Verbose(char* msg, ...);   
+    void Verbose(const char* msg, ...);
+    void Verbose(String message, ...);
 
     
 private:
+    void print(String format, va_list args);
     void print(const char *format, va_list args);
 };
 

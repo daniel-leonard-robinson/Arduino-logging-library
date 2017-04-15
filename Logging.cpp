@@ -1,48 +1,96 @@
 #include "Logging.h"
 
 void Logging::Init(int level, long baud){
-	_level = constrain(level,LOG_LEVEL_NOOUTPUT,LOG_LEVEL_VERBOSE);
+	_level = constrain(level, LOG_LEVEL_NOOUTPUT, LOG_LEVEL_VERBOSE);
 	_baud = baud;
 	//    SerialUSB.begin(_baud);
 }
 
-void Logging::Error(char* msg, ...){
+void Logging::Error(const char* msg, ...){
 	if (LOG_LEVEL_ERRORS <= _level) {
 		//		print("ERROR: ", 0);
 		print("ERROR: ", va_list());
 		va_list args;
 		va_start(args, msg);
-		print(msg,args);
+		print(msg, args);
+	}
+}
+
+void Logging::Error(String message, ...){
+	if (LOG_LEVEL_ERRORS <= _level) {
+		char msg[message.length() + 3];
+		message.toCharArray(msg, message.length() + 1);
+		strcat(msg, CR);
+		print("ERROR: ", va_list());
+		va_list args;
+		va_start(args, msg);
+		print(msg, args);
 	}
 }
 
 
-void Logging::Info(char* msg, ...){
+void Logging::Info(const char* msg, ...){
 	if (LOG_LEVEL_INFOS <= _level) {
 		va_list args;
 		va_start(args, msg);
-		print(msg,args);
+		print(msg, args);
 	}
 }
 
-void Logging::Debug(char* msg, ...){
+void Logging::Info(String message, ...){
+	if (LOG_LEVEL_INFOS <= _level) {
+		char msg[message.length() + 3];
+		message.toCharArray(msg, message.length() + 1);
+		strcat(msg, CR);
+		va_list args;
+		va_start(args, msg);
+		print(msg, args);
+	}
+}
+
+void Logging::Debug(const char* msg, ...){
 	if (LOG_LEVEL_DEBUG <= _level) {
 		va_list args;
 		va_start(args, msg);
-		print(msg,args);
+		print(msg, args);
 	}
 }
 
+void Logging::Debug(String message, ...){
+	if (LOG_LEVEL_DEBUG <= _level) {
+		char msg[message.length() + 3];
+		message.toCharArray(msg, message.length() + 1);
+		strcat(msg, CR);
+		va_list args;
+		va_start(args, msg);
+		print(msg, args);
+	}
+}
 
-void Logging::Verbose(char* msg, ...){
+void Logging::Verbose(const char* msg, ...){
 	if (LOG_LEVEL_VERBOSE <= _level) {
 		va_list args;
 		va_start(args, msg);
-		print(msg,args);
+		print(msg, args);
 	}
 }
 
+void Logging::Verbose(String message, ...){
+	if (LOG_LEVEL_VERBOSE <= _level) {
+		char msg[message.length() + 3];
+		message.toCharArray(msg, message.length() + 1);
+		strcat(msg, CR);
+		va_list args;
+		va_start(args, msg);
+		print(msg, args);
+	}
+}
 
+//void Logging::print(String format, va_list args) {
+//	char message[format.length() + 1];
+//	format.toCharArray(message, format.length() + 1);
+//	this->print(format, args);
+//}
 
 void Logging::print(const char *format, va_list args) {
 	//
