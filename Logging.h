@@ -89,6 +89,8 @@ private:
     int _level;
     long _baud;
     int _medium; // which wrapper / medium to output log data
+    int _buf_size;
+    uint8_t _tx_buffer[1000];
 public:
     /*! 
 	 * default Constructor
@@ -103,6 +105,14 @@ public:
 	*/
 	void Init(int level, long baud);
 	
+    /**
+	* Medium. Specifies what medium to use when printing.
+	* \param void
+	* \return void
+	*
+	*/
+	boolean Medium(int medium);
+
     /**
 	* Output an error message. Output message contains
 	* ERROR: followed by original msg
