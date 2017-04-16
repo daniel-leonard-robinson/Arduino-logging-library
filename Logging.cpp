@@ -5,7 +5,7 @@ extern char last_sender[sender_length];
 void Logging::Init(int level, long baud){
 	_level = constrain(level, LOG_LEVEL_NOOUTPUT, LOG_LEVEL_VERBOSE);
 	_baud = baud;
-	_buf_size = 1000;
+//	_buf_size = 1000;
 	_medium = SERIAL_MEDIUM;
 	//    SerialUSB.begin(_baud);
 }
@@ -106,8 +106,8 @@ void Logging::print(const char *format, va_list args) {
 //	Stream stream = new Stream();
 	// loop through format string
 
-	uint8_t tx_buffer[1000];
-	BufferSerial bs(tx_buffer, 1000);
+	uint8_t tx_buffer[2000];
+	BufferSerial bs(tx_buffer, 2000);
 
 	for (; *format != 0; ++format) {
 		if (*format == '%') {

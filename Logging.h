@@ -90,7 +90,7 @@ private:
     long _baud;
     int _medium; // which wrapper / medium to output log data
     int _buf_size;
-    uint8_t _tx_buffer[1000];
+//    uint8_t _tx_buffer[2000];
 public:
     /*! 
 	 * default Constructor
