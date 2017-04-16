@@ -12,12 +12,28 @@ extern "C" {
   #include <avr/io.h>
 }
 
+#include "../includes.h"
 
-#define LOG_LEVEL_NOOUTPUT 0 
-#define LOG_LEVEL_ERRORS 1
-#define LOG_LEVEL_INFOS 2
-#define LOG_LEVEL_DEBUG 3
-#define LOG_LEVEL_VERBOSE 4
+
+//#define LOG_LEVEL_NOOUTPUT 0
+//#define LOG_LEVEL_ERRORS 1
+//#define LOG_LEVEL_INFOS 2
+//#define LOG_LEVEL_DEBUG 3
+//#define LOG_LEVEL_VERBOSE 4
+
+enum log_level {
+	LOG_LEVEL_NOOUTPUT,
+	LOG_LEVEL_ERRORS,
+	LOG_LEVEL_INFOS,
+	LOG_LEVEL_DEBUG,
+	LOG_LEVEL_VERBOSE
+};
+
+enum medium_type {
+	SERIAL_MEDIUM,
+	SMS_MEDIUM,
+	TCP_MEDIUM
+};
 
 // default loglevel if nothing is set from user
 #define LOGLEVEL LOG_LEVEL_DEBUG 
@@ -72,6 +88,7 @@ class Logging {
 private:
     int _level;
     long _baud;
+    int _medium; // which wrapper / medium to output log data
 public:
     /*! 
 	 * default Constructor

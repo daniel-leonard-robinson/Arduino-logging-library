@@ -1,8 +1,11 @@
 #include "Logging.h"
 
+extern char last_sender[sender_length];
+
 void Logging::Init(int level, long baud){
 	_level = constrain(level, LOG_LEVEL_NOOUTPUT, LOG_LEVEL_VERBOSE);
 	_baud = baud;
+	_medium = SERIAL_MEDIUM;
 	//    SerialUSB.begin(_baud);
 }
 
@@ -94,6 +97,7 @@ void Logging::Verbose(String message, ...){
 
 void Logging::print(const char *format, va_list args) {
 	//
+	Stream stream = new Stream();
 	// loop through format string
 	for (; *format != 0; ++format) {
 		if (*format == '%') {
@@ -157,9 +161,15 @@ void Logging::print(const char *format, va_list args) {
 				}
 				continue;
 			}
-
 		}
 		SerialUSB.print(*format);
+	}
+
+	if (_medium == SMS_MEDIUM) {
+		gsmSMSsend(last_sender, (char *)format);
+	}
+	if (_medium == TCP_MEDIUM) {
+		TCPsend(format);
 	}
 }
 
