@@ -5,8 +5,14 @@ extern char last_sender[sender_length];
 void Logging::Init(int level, long baud){
 	_level = constrain(level, LOG_LEVEL_NOOUTPUT, LOG_LEVEL_VERBOSE);
 	_baud = baud;
+	_buf_size = 1000;
 	_medium = SERIAL_MEDIUM;
 	//    SerialUSB.begin(_baud);
+}
+
+boolean Logging::Medium(int medium) {
+	_medium = medium;
+	return true;
 }
 
 void Logging::Error(const char* msg, ...){
@@ -97,79 +103,107 @@ void Logging::Verbose(String message, ...){
 
 void Logging::print(const char *format, va_list args) {
 	//
-	Stream stream = new Stream();
+//	Stream stream = new Stream();
 	// loop through format string
+
+	uint8_t tx_buffer[1000];
+	BufferSerial bs(tx_buffer, 1000);
+
 	for (; *format != 0; ++format) {
 		if (*format == '%') {
 			++format;
 			if (*format == '\0') break;
 			if (*format == '%') {
-				SerialUSB.print(*format);
+//				SerialUSB.print(*format);
+				bs.print(*format);
 				continue;
 			}
 			if( *format == 's' ) {
 				register char *s = (char *)va_arg( args, int );
-				SerialUSB.print(s);
+//				SerialUSB.print(s);
+				bs.print(s);
 				continue;
 			}
 			if( *format == 'd' || *format == 'i') {
-				SerialUSB.print(va_arg( args, int ),DEC);
+//				SerialUSB.print(va_arg( args, int ),DEC);
+				bs.print(va_arg( args, int ),DEC);
 				continue;
 			}
 			if( *format == 'x' ) {
-				SerialUSB.print(va_arg( args, int ),HEX);
+//				SerialUSB.print(va_arg( args, int ),HEX);
+				bs.print(va_arg( args, int ),HEX);
 				continue;
 			}
 			if( *format == 'X' ) {
-				SerialUSB.print("0x");
-				SerialUSB.print(va_arg( args, int ),HEX);
+//				SerialUSB.print("0x");
+				bs.print("0x");
+//				SerialUSB.print(va_arg( args, int ),HEX);
+				bs.print(va_arg( args, int ),HEX);
 				continue;
 			}
 			if( *format == 'b' ) {
-				SerialUSB.print(va_arg( args, int ),BIN);
+//				SerialUSB.print(va_arg( args, int ),BIN);
+				bs.print(va_arg( args, int ),BIN);
 				continue;
 			}
 			if( *format == 'B' ) {
-				SerialUSB.print("0b");
-				SerialUSB.print(va_arg( args, int ),BIN);
+//				SerialUSB.print("0b");
+				bs.print("0b");
+//				SerialUSB.print(va_arg( args, int ),BIN);
+				bs.print(va_arg( args, int ),BIN);
 				continue;
 			}
 			if( *format == 'l' ) {
-				SerialUSB.print(va_arg( args, long ),DEC);
+//				SerialUSB.print(va_arg( args, long ),DEC);
+				bs.print(va_arg( args, long ),DEC);
 				continue;
 			}
 
 			if( *format == 'c' ) {
-				SerialUSB.print(va_arg( args, int ));
+//				SerialUSB.print(va_arg( args, int ));
+				bs.print(va_arg( args, int ));
 				continue;
 			}
 			if( *format == 't' ) {
 				if (va_arg( args, int ) == 1) {
-					SerialUSB.print("T");
+//					SerialUSB.print("T");
+					bs.print("T");
 				}
 				else {
-					SerialUSB.print("F");
+//					SerialUSB.print("F");
+					bs.print("F");
 				}
 				continue;
 			}
 			if( *format == 'T' ) {
 				if (va_arg( args, int ) == 1) {
-					SerialUSB.print("true");
+//					SerialUSB.print("true");
+					bs.print("true");
 				}
 				else {
-					SerialUSB.print("false");
+//					SerialUSB.print("false");
+					bs.print("false");
 				}
 				continue;
 			}
 		}
-		SerialUSB.print(*format);
+//		SerialUSB.print(*format);
+		bs.print(*format);
 	}
 
+	SerialUSB.print(bs);
+
 	if (_medium == SMS_MEDIUM) {
-		gsmSMSsend(last_sender, (char *)format);
+		int temp_level = _level;
+		_level = LOG_LEVEL_NOOUTPUT;
+		gsmSMSsend(last_sender, bs);
+		_level = temp_level;
 	}
 	if (_medium == TCP_MEDIUM) {
-		TCPsend(format);
+		int temp_level = _level;
+		_level = LOG_LEVEL_NOOUTPUT;
+		TCPsend(bs);
+		_level = temp_level;
 	}
 }
 
