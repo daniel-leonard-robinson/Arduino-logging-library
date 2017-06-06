@@ -2,12 +2,11 @@
 
 extern char last_sender[sender_length];
 
-void Logging::Init(int level, long baud){
+boolean Logging::Init(int level){
 	_level = constrain(level, LOG_LEVEL_NOOUTPUT, LOG_LEVEL_VERBOSE);
-	_baud = baud;
 //	_buf_size = 1000;
 	_medium = SERIAL_MEDIUM;
-	//    SerialUSB.begin(_baud);
+	return true;
 }
 
 boolean Logging::Medium(int medium) {

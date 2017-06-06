@@ -100,10 +100,10 @@ public:
     /** 
 	* Initializing, must be called as first.
 	* \param void
-	* \return void
+	* \return boolean
 	*
 	*/
-	void Init(int level, long baud);
+	boolean Init(int level);
 	
     /**
 	* Medium. Specifies what medium to use when printing.
